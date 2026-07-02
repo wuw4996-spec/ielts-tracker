@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作品展示 - 雅思学习监督器</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    padding: 40px 20px;
+  }
+  .container { max-width: 1000px; margin: 0 auto; }
+
+  /* ===== 标题区 ===== */
+  .header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  .header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #6366f1, #a78bfa, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+  .header p {
+    font-size: 16px;
+    color: #6b7280;
+  }
+  .header .badge {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 18px;
+    background: #eef2ff;
+    color: #4f46e5;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  /* ===== 手机样机 ===== */
+  .mockup-row {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-bottom: 50px;
+  }
+  .phone-frame {
+    width: 280px;
+    background: #fff;
+    border-radius: 40px;
+    padding: 12px;
+    box-shadow:
+      0 30px 60px rgba(0,0,0,0.15),
+      0 0 0 1px rgba(0,0,0,0.05);
+    position: relative;
+  }
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 18px;
+    background: #1a1a2e;
+    border-radius: 0 0 12px 12px;
+    z-index: 10;
+  }
+  .phone-screen {
+    background: #f0f2f5;
+    border-radius: 30px;
+    overflow: hidden;
+    height: 560px;
+    display: flex;
+    flex-direction: column;
+  }
+  .screen-header {
+    background: #fff;
+    padding: 28px 16px 10px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .screen-header h3 {
+    font-size: 16px;
+    font-weight: 700;
+    background: linear-gradient(135deg,#6366f1,#a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .screen-header .badge {
+    font-size: 11px;
+    background: linear-gradient(135deg,#f59e0b,#ef4444);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 10px;
+  }
+  .screen-body {
+    flex: 1;
+    padding: 14px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  /* 模拟内容 */
+  .mock-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .mock-stat {
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px 12px;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+  }
+  .mock-stat .num {
+    font-size: 24px;
+    font-weight: 700;
+    color: #6366f1;
+  }
+  .mock-stat .lbl {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 2px;
+  }
+  .mock-ring {
+    text-align: center;
+    padding: 16px;
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+  }
+  .mock-ring .ring {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 6px solid #e5e7eb;
+    border-top-color: #6366f1;
+    animation: spin 2s linear infinite;
+    margin: 0 auto 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .mock-ring .pct { font-size: 22px; font-weight: 700; }
+  .mock-ring .sub { font-size: 11px; color: #9ca3af; }
+
+  .mock-modules {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+  .mock-mod {
+    background: #fff;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 8px 2px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .mock-mod.done { border-color: #10b981; background: #d1fae5; color: #059669; }
+  .mock-mod.active { border-color: #6366f1; background: #eef2ff; color: #4f46e5; }
+
+  .mock-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .mock-card .left { display: flex; align-items: center; gap: 10px; }
+  .mock-card .icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .mock-card .icon.green { background: #d1fae5; }
+  .mock-card .icon.yellow { background: #fef3c7; }
+  .mock-card .icon.blue { background: #eef2ff; }
+  .mock-card h4 { font-size: 13px; }
+  .mock-card p { font-size: 11px; color: #9ca3af; }
+  .mock-card .days { font-size: 12px; font-weight: 600; color: #6366f1; }
+
+  .mock-bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid #e5e7eb;
+    flex-shrink: 0;
+  }
+  .mock-bottom-nav span {
+    font-size: 10px;
+    color: #9ca3af;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+  }
+  .mock-bottom-nav span .icon { font-size: 20px; }
+  .mock-bottom-nav span.active { color: #6366f1; }
+  .mock-bottom-nav span.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 20px;
+    height: 2px;
+    background: #6366f1;
+    border-radius: 0 0 2px 2px;
+  }
+
+  /* ===== 功能亮点 ===== */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .feature-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    transition: .3s;
+  }
+  .feature-card:hover {
+    border-color: #6366f1;
+    box-shadow: 0 8px 24px rgba(99,102,241,0.1);
+    transform: translateY(-2px);
+  }
+  .feature-card .emoji { font-size: 32px; margin-bottom: 10px; }
+  .feature-card h3 { font-size: 16px; margin-bottom: 6px; }
+  .feature-card p { font-size: 13px; color: #6b7280; line-height: 1.6; }
+
+  /* ===== 技术标签 ===== */
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+  .tech-stack span {
+    padding: 6px 16px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .tech-stack span.highlight {
+    background: #eef2ff;
+    border-color: #6366f1;
+    color: #4f46e5;
+  }
+
+  /* ===== 页脚 ===== */
+  .footer {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 13px;
+    padding: 20px;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  /* ===== 截图提示 ===== */
+  .screenshot-hint {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #92400e;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="screenshot-hint">
+    📸 把这个页面在浏览器中打开，截图即可用作闲鱼作品集
+  </div>
+
+  <!-- 标题 -->
+  <div class="header">
+    <h1>雅思学习监督器</h1>
+    <p>IELTS Study Tracker — 全功能学习进度管理工具</p>
+    <div class="badge">✅ 已开发完成 · 可展示源代码</div>
+  </div>
+
+  <!-- 手机样机 -->
+  <div class="mockup-row">
+    <!-- 样机1：仪表盘 -->
+    <div class="phone-frame">
+      <div class="phone-screen">
+        <div class="screen-header">
+          <h3>雅思学习监督器</h3>
+          <span class="badge">🔥 3天</span>
+        </div>
+        <div class="screen-body">
+          <div class="mock-stats">
+            <div class="mock-stat">
+              <div class="num">28</div>
+              <div class="lbl">今日学习(分)</div>
+            </div>
+            <div class="mock-stat">
+              <div class="num">7</div>
+              <div class="lbl">连续打卡(天)</div>
+            </div>
+            <div class="mock-stat">
+              <div class="num">24</div>
+              <div class="lbl">总学习(天)</div>
+            </div>
+            <div class="mock-stat">
+              <div class="num">85%</div>
+              <div class="lbl">完成率</div>
+            </div>
+          </div>
+          <div class="mock-ring">
+            <div class="ring"></div>
+            <div class="pct">68%</div>
+            <div class="sub">本月目标进度</div>
+          </div>
+          <div class="mock-modules">
+            <div class="mock-mod done">听力</div>
+            <div class="mock-mod active">阅读</div>
+            <div class="mock-mod">写作</div>
+            <div class="mock-mod">口语</div>
+            <div class="mock-mod">词汇</div>
+          </div>
+          <div class="mock-card">
+            <div class="left">
+              <div class="icon green">📖</div>
+              <div><h4>阅读 Passage 1</h4><p>已完成 · 正确率 8/10</p></div>
+            </div>
+            <span class="days">🔥</span>
+          </div>
+          <div class="mock-card">
+            <div class="left">
+              <div class="icon yellow">🔤</div>
+              <div><h4>雅思核心词汇</h4><p>List 15 · 50词</p></div>
+            </div>
+            <span class="days">⏳</span>
+          </div>
+          <div class="mock-card">
+            <div class="left">
+              <div class="icon blue">🎧</div>
+              <div><h4>听力 Section 3</h4><p>剑18 Test 2</p></div>
+            </div>
+            <span class="days">⏰</span>
+          </div>
+        </div>
+        <div class="mock-bottom-nav">
+          <span class="active"><span class="icon">📊</span>首页</span>
+          <span><span class="icon">📅</span>打卡</span>
+          <span><span class="icon">📈</span>统计</span>
+          <span><span class="icon">⚙️</span>设置</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 样机2：打卡页面 -->
+    <div class="phone-frame">
+      <div class="phone-screen">
+        <div class="screen-header">
+          <h3>每日打卡</h3>
+          <span class="badge">📅 7月</span>
+        </div>
+        <div class="screen-body">
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:12px;">
+            <span style="color:#9ca3af;">一</span><span style="color:#9ca3af;">二</span><span style="color:#9ca3af;">三</span><span style="color:#9ca3af;">四</span><span style="color:#9ca3af;">五</span><span style="color:#9ca3af;">六</span><span style="color:#9ca3af;">日</span>
+            <span style="color:#9ca3af;font-size:13px;">29</span>
+            <span style="color:#9ca3af;font-size:13px;">30</span>
+            <span style="background:#6366f1;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin:auto;font-size:13px;">1</span>
+            <span style="background:#10b981;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin:auto;font-size:13px;">2</span>
+            <span style="color:#9ca3af;font-size:13px;">3</span>
+            <span style="background:#10b981;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin:auto;font-size:13px;">4</span>
+            <span style="background:#10b981;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin:auto;font-size:13px;">5</span>
+            <span style="color:#9ca3af;font-size:13px;">6</span>
+            <span style="background:#10b981;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin:auto;font-size:13px;">7</span>
+            <span style="color:#9ca3af;font-size:13px;">8</span>
+            <span style="color:#9ca3af;font-size:13px;">9</span>
+            <span style="color:#9ca3af;font-size:13px;">10</span>
+            <span style="color:#9ca3af;font-size:13px;">11</span>
+            <span style="color:#9ca3af;font-size:13px;">12</span>
+          </div>
+          <div style="margin-top:6px;padding:6px 10px;background:#d1fae5;border-radius:8px;text-align:center;font-size:12px;color:#059669;">✅ 本月已打卡 5 天</div>
+          <div style="height:1px;background:#e5e7eb;margin:10px 0;"></div>
+          <div style="font-size:13px;font-weight:600;margin-bottom:8px;">今日学习记录</div>
+          <div class="mock-card">
+            <div class="left">
+              <div class="icon green">📖</div>
+              <div><h4>阅读练习</h4><p>剑18 Test 2 Passage 1</p></div>
+            </div>
+            <span class="days">30min</span>
+          </div>
+          <div class="mock-card">
+            <div class="left">
+              <div class="icon blue">🎧</div>
+              <div><h4>听力练习</h4><p>剑18 Test 2 Section 3</p></div>
+            </div>
+            <span class="days">25min</span>
+          </div>
+          <div class="mock-card">
+            <div class="left">
+              <div class="icon" style="background:#fef3c7;">✍️</div>
+              <div><h4>写作练习</h4><p>Task 1 图表题</p></div>
+            </div>
+            <span class="days">40min</span>
+          </div>
+          <div style="margin-top:auto;padding:12px;background:#6366f1;color:#fff;border-radius:12px;text-align:center;font-weight:600;font-size:14px;cursor:pointer;">
+            ✏️ 记录今日学习
+          </div>
+        </div>
+        <div class="mock-bottom-nav">
+          <span><span class="icon">📊</span>首页</span>
+          <span class="active"><span class="icon">📅</span>打卡</span>
+          <span><span class="icon">📈</span>统计</span>
+          <span><span class="icon">⚙️</span>设置</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 样机3：统计页面 -->
+    <div class="phone-frame">
+      <div class="phone-screen">
+        <div class="screen-header">
+          <h3>学习统计</h3>
+          <span class="badge">📊 本周</span>
+        </div>
+        <div class="screen-body">
+          <div style="display:flex;gap:6px;margin-bottom:10px;">
+            <div style="flex:1;background:#fff;border-radius:12px;padding:12px;text-align:center;border:1px solid #e5e7eb;">
+              <div style="font-size:20px;font-weight:700;color:#6366f1;">12.5h</div>
+              <div style="font-size:11px;color:#9ca3af;">本周学习</div>
+            </div>
+            <div style="flex:1;background:#fff;border-radius:12px;padding:12px;text-align:center;border:1px solid #e5e7eb;">
+              <div style="font-size:20px;font-weight:700;color:#10b981;">7天</div>
+              <div style="font-size:11px;color:#9ca3af;">最长连续</div>
+            </div>
+          </div>
+          <!-- 柱状图 -->
+          <div style="background:#fff;border-radius:12px;padding:16px;border:1px solid #e5e7eb;">
+            <div style="font-size:13px;font-weight:600;margin-bottom:12px;">📈 近7天学习时长</div>
+            <div style="display:flex;align-items:end;gap:6px;height:80px;">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                <div style="width:100%;background:#6366f1;border-radius:4px 4px 0 0;height:50px;"></div>
+                <span style="font-size:10px;color:#9ca3af;margin-top:4px;">周一</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                <div style="width:100%;background:#6366f1;border-radius:4px 4px 0 0;height:70px;"></div>
+                <span style="font-size:10px;color:#9ca3af;margin-top:4px;">周二</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                <div style="width:100%;background:#6366f1;border-radius:4px 4px 0 0;height:40px;"></div>
+                <span style="font-size:10px;color:#9ca3af;margin-top:4px;">周三</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                <div style="width:100%;background:#6366f1;border-radius:4px 4px 0 0;height:80px;"></div>
+                <span style="font-size:10px;color:#9ca3af;margin-top:4px;">周四</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                <div style="width:100%;background:#a78bfa;border-radius:4px 4px 0 0;height:30px;"></div>
+                <span style="font-size:10px;color:#9ca3af;margin-top:4px;">周五</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                <div style="width:100%;background:#a78bfa;border-radius:4px 4px 0 0;height:55px;"></div>
+                <span style="font-size:10px;color:#9ca3af;margin-top:4px;">周六</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                <div style="width:100%;background:#c4b5fd;border-radius:4px 4px 0 0;height:20px;"></div>
+                <span style="font-size:10px;color:#9ca3af;margin-top:4px;">周日</span>
+              </div>
+            </div>
+          </div>
+          <div style="background:#fff;border-radius:12px;padding:14px;border:1px solid #e5e7eb;margin-top:8px;">
+            <div style="font-size:13px;font-weight:600;margin-bottom:8px;">📊 各模块学习时长</div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px;"><span>听力</span><span style="color:#6366f1;">8.5h</span></div><div style="height:6px;background:#e5e7eb;border-radius:3px;"><div style="height:100%;width:45%;background:#6366f1;border-radius:3px;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px;"><span>阅读</span><span style="color:#10b981;">6.2h</span></div><div style="height:6px;background:#e5e7eb;border-radius:3px;"><div style="height:100%;width:35%;background:#10b981;border-radius:3px;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px;"><span>写作</span><span style="color:#f59e0b;">3.0h</span></div><div style="height:6px;background:#e5e7eb;border-radius:3px;"><div style="height:100%;width:18%;background:#f59e0b;border-radius:3px;"></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="mock-bottom-nav">
+          <span><span class="icon">📊</span>首页</span>
+          <span><span class="icon">📅</span>打卡</span>
+          <span class="active"><span class="icon">📈</span>统计</span>
+          <span><span class="icon">⚙️</span>设置</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 功能亮点 -->
+  <div class="features">
+    <div class="feature-card">
+      <div class="emoji">📊</div>
+      <h3>仪表盘概览</h3>
+      <p>今日学习时长、连续打卡天数、总学习天数、完成率一目了然</p>
+    </div>
+    <div class="feature-card">
+      <div class="emoji">📅</div>
+      <h3>每日打卡</h3>
+      <p>日历式打卡记录，可视化学习日历，追踪每日学习轨迹</p>
+    </div>
+    <div class="feature-card">
+      <div class="emoji">📈</div>
+      <h3>多维统计</h3>
+      <p>学习时长柱状图、各模块分布图、连续打卡天数统计</p>
+    </div>
+    <div class="feature-card">
+      <div class="emoji">🎯</div>
+      <h3>模块追踪</h3>
+      <p>听力/阅读/写作/口语/词汇五大模块独立追踪进度</p>
+    </div>
+    <div class="feature-card">
+      <div class="emoji">🌙</div>
+      <h3>深色模式</h3>
+      <p>支持亮色/深色模式切换，夜晚学习更护眼</p>
+    </div>
+    <div class="feature-card">
+      <div class="emoji">💾</div>
+      <h3>本地存储</h3>
+      <p>数据保存在本地，无需服务器，开箱即用</p>
+    </div>
+  </div>
+
+  <!-- 技术栈 -->
+  <div class="tech-stack">
+    <span class="highlight">HTML5</span>
+    <span class="highlight">CSS3</span>
+    <span class="highlight">JavaScript</span>
+    <span>Node.js</span>
+    <span>本地存储</span>
+    <span>响应式设计</span>
+    <span>PWA 适配</span>
+  </div>
+
+  <!-- 底部 -->
+  <div class="footer">
+    📱 支持手机、平板、电脑全端适配 · 🔧 可定制修改
+  </div>
+
+</div>
+
+</body>
+</html>
